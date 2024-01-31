@@ -1,13 +1,13 @@
 function echoHello {
-    echo ☦️
+    return "☦️"
 }
 
 function echoAhuy {
-    echo 🤬
+    return "🤬"
 }
 
 function kissBohdan {
-    echo 😘☦️дан
+    return "😘☦️дан"
 }
 
 function setAlias ([string] $name, [string] $value) {
@@ -38,6 +38,12 @@ function gitPull {
     git pull
 }
 
+function gitNewBranch([string] $name) {
+    git checkout main
+    git pull
+    git checkout -b "$name"
+}
+
 function slsDeployFunction ([string] $functionName){
     npx sls deploy function -f "$functionName"
 }
@@ -61,6 +67,10 @@ function openConfig {
     code $profile
 }
 
+function openConfigFolder {
+    cd (Split-Path $profile)
+}
+
 function connectDevDb { # perhaps abstract from a specific connection and make it generic?
     $ip = (aws ec2 describe-instances --instance-ids i-01b9fb5f7079f1d89 --query "Reservations[*].Instances[*].PublicIpAddress" --output text --profile hh).replace(".", '-')
     ssh -i E:/keychain/HamletHub.pem -L 27017:hamlethub-dev-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
@@ -69,6 +79,29 @@ function connectDevDb { # perhaps abstract from a specific connection and make i
 function connectProdDb {
     $ip = (aws ec2 describe-instances --instance-ids i-08af34a8129a8dbf9 --query "Reservations[*].Instances[*].PublicIpAddress" --output text --profile hh).replace(".", '-')
     ssh -i E:/keychain/HamletHub.pem -L 27017:hamlethub-prod-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
+}
+
+function getWSLPath {
+    param (
+        [string]$Path = (Get-Location).Path
+    )
+
+    # Replace backslashes with forward slashes
+    $wslPath = $Path.Replace('\', '/')
+
+    # Replace 'C:' with '/mnt/c', 'D:' with '/mnt/d', etc.
+    $driveRegex = '^[A-Za-z]:'
+    if ($wslPath -match $driveRegex) {
+        $driveLetter = $wslPath.Substring(0, 1).ToLower()
+        $wslPath = $wslPath -replace $driveRegex, "/mnt/$driveLetter"
+    }
+
+    return $wslPath
+}
+
+function wslHere([string] $command) {
+    $path = getWSLPath
+    wsl "$command" "$path"
 }
 
 # function AppendNewAliasToThisFile {
@@ -87,16 +120,24 @@ function connectProdDb {
 echoHello
 
 # Garbage
+# Global
+setAlias "help" "getHelp"
+setAlias "config" "openConfig"
+setAlias "cdconfig" "openConfigFolder"
+
+# Git
 setAlias "gs" "gitStatus"
 setAlias "gc" "gitCommit"
 setAlias "gaa" "gitAddCurrent"
 setAlias "ga" "gitAdd"
 setAlias "gp" "gitPush"
 setAlias "upd" "gitPull"
-setAlias "sdf" "slsDeployFunction"
-setAlias "sdeploy" "slsDeploy"
 setAlias "gacp" "gitAddCommitPush"
-setAlias "help" "getHelp"
-setAlias "config" "openConfig"
+
+# Serverless framework
+setAlias "sdeploy" "slsDeploy"
+setAlias "sdf" "slsDeployFunction"
+
+# Hamlethub
 setAlias "devdb" "connectDevDb"
 setAlias "proddb" "connectProdDb"
