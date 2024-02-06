@@ -1,3 +1,5 @@
+$aliasName = "my alias"
+
 function echoHello {
     return "☦️"
 }
@@ -11,7 +13,7 @@ function kissBohdan {
 }
 
 function setAlias ([string] $name, [string] $value) {
-    Set-Alias -Name $name -Value $value -force -Description "my alias" -Scope Global
+    Set-Alias -Name $name -Value $value -force -Description "$aliasName" -Scope Global
 }
 
 function gitStatus {
@@ -38,6 +40,10 @@ function gitPull {
     git pull
 }
 
+function gitCheckout([string] $name) {
+    git checkout "$name"
+}
+
 function gitNewBranch([string] $name) {
     git checkout main
     git pull
@@ -60,7 +66,7 @@ function gitAddCommitPush ([string] $message) {
 }
 
 function getHelp {
-    Get-Alias | Where-Object {$_.Description -Match "my alias"}
+    Get-Alias | Where-Object {$_.Description -Match "$aliasName"}
 }
 
 function openConfig {
@@ -133,6 +139,8 @@ setAlias "ga" "gitAdd"
 setAlias "gp" "gitPush"
 setAlias "upd" "gitPull"
 setAlias "gacp" "gitAddCommitPush"
+setAlias "gito" "gitCheckout"
+setAlias "gb" "gitNewBranch"
 
 # Serverless framework
 setAlias "sdeploy" "slsDeploy"
