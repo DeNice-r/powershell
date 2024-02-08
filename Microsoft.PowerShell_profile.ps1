@@ -87,6 +87,11 @@ function connectProdDb {
     ssh -i E:/keychain/HamletHub.pem -L 27017:hamlethub-prod-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
 }
 
+function connectFetchDb {
+    $ip = (aws ec2 describe-instances --instance-ids i-00b948dee8d6723a9 --query "Reservations[*].Instances[*].PublicIpAddress" --output text --profile hh).replace(".", '-')
+    ssh -i E:/keychain/HamletHub.pem -L 27017:fetch-events-dev-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
+}
+
 function getWSLPath {
     param (
         [string]$Path = (Get-Location).Path
@@ -149,3 +154,4 @@ setAlias "sdf" "slsDeployFunction"
 # Hamlethub
 setAlias "devdb" "connectDevDb"
 setAlias "proddb" "connectProdDb"
+setAlias "fetchdb" "connectFetchDb"
