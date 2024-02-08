@@ -65,6 +65,10 @@ function gitAddCommitPush ([string] $message) {
     echoAhuy
 }
 
+function gitReset {
+    git reset --hard HEAD
+}
+
 function getHelp {
     Get-Alias | Where-Object {$_.Description -Match "$aliasName"}
 }
@@ -146,6 +150,7 @@ setAlias "upd" "gitPull"
 setAlias "gacp" "gitAddCommitPush"
 setAlias "gito" "gitCheckout"
 setAlias "gb" "gitNewBranch"
+setAlias "greset" "gitReset"
 
 # Serverless framework
 setAlias "sdeploy" "slsDeploy"
