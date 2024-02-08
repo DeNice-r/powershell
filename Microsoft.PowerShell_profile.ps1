@@ -74,7 +74,7 @@ function getHelp {
 }
 
 function openConfig {
-    code $profile
+    Start-Job -ScriptBlock { ws $profile } > $null
 }
 
 function openConfigFolder {
