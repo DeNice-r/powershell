@@ -96,6 +96,11 @@ function connectFetchDb {
     ssh -i E:/keychain/HamletHub.pem -L 27017:fetch-events-dev-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
 }
 
+function updateAttdl {
+    # run cd attdl command on the server
+    ssh ubuntu@140.238.172.178 -i E:/keychain/ubuntu.key "cd /home/ubuntu/attdl_bot && sudo bash update.sh"
+}
+
 function getWSLPath {
     param (
         [string]$Path = (Get-Location).Path
