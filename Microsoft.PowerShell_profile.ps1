@@ -1,4 +1,5 @@
 $aliasName = "my alias"
+$keychainPath = "C:/keychain"
 
 function echoHello {
     return "☦️"
@@ -83,22 +84,22 @@ function openConfigFolder {
 
 function connectDevDb { # perhaps abstract from a specific connection and make it generic?
     $ip = (aws ec2 describe-instances --instance-ids i-01b9fb5f7079f1d89 --query "Reservations[*].Instances[*].PublicIpAddress" --output text --profile hh).replace(".", '-')
-    ssh -i E:/keychain/HamletHub.pem -L 27017:hamlethub-dev-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
+    ssh -i "$keychainPath/HamletHub.pem" -L 27017:hamlethub-dev-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
 }
 
 function connectProdDb {
     $ip = (aws ec2 describe-instances --instance-ids i-08af34a8129a8dbf9 --query "Reservations[*].Instances[*].PublicIpAddress" --output text --profile hh).replace(".", '-')
-    ssh -i E:/keychain/HamletHub.pem -L 27017:hamlethub-prod-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
+    ssh -i "$keychainPath/HamletHub.pem" -L 27017:hamlethub-prod-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
 }
 
 function connectFetchDb {
     $ip = (aws ec2 describe-instances --instance-ids i-00b948dee8d6723a9 --query "Reservations[*].Instances[*].PublicIpAddress" --output text --profile hh).replace(".", '-')
-    ssh -i E:/keychain/HamletHub.pem -L 27017:fetch-events-dev-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
+    ssh -i "$keychainPath/HamletHub.pem" -L 27017:fetch-events-dev-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
 }
 
 function updateAttdl {
     # run cd attdl command on the server
-    ssh ubuntu@140.238.172.178 -i E:/keychain/ubuntu.key "cd /home/ubuntu/attdl_bot && sudo bash update.sh"
+    ssh ubuntu@140.238.172.178 -i "$keychainPath/ubuntu.key" "cd /home/ubuntu/attdl_bot && sudo bash update.sh"
 }
 
 function getWSLPath {
