@@ -43,6 +43,7 @@ function gitPull {
 
 function gitCheckout([string] $name) {
     git checkout "$name"
+    git pull
 }
 
 function gitNewBranch([string] $name) {
@@ -51,7 +52,7 @@ function gitNewBranch([string] $name) {
     git checkout -b "$name"
 }
 
-function slsDeployFunction ([string] $functionName){
+function slsDeployFunction ([string] $functionName) {
     npx sls deploy function -f "$functionName"
 }
 
@@ -71,7 +72,7 @@ function gitReset {
 }
 
 function getHelp {
-    Get-Alias | Where-Object {$_.Description -Match "$aliasName"}
+    Get-Alias | Where-Object { $_.Description -Match "$aliasName" }
 }
 
 function openConfig {
@@ -82,7 +83,8 @@ function openConfigFolder {
     cd (Split-Path $profile)
 }
 
-function connectDevDb { # perhaps abstract from a specific connection and make it generic?
+function connectDevDb {
+    # perhaps abstract from a specific connection and make it generic?
     $ip = (aws ec2 describe-instances --instance-ids i-01b9fb5f7079f1d89 --query "Reservations[*].Instances[*].PublicIpAddress" --output text --profile hh).replace(".", '-')
     ssh -i "$keychainPath/HamletHub.pem" -L 27017:hamlethub-dev-cluster.cluster-c5gewfc0vpna.us-east-1.docdb.amazonaws.com:27017 "ec2-user@ec2-$ip.compute-1.amazonaws.com"
 }
