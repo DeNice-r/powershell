@@ -47,9 +47,50 @@ function gitCheckout([string] $name) {
 }
 
 function gitNewBranch([string] $name) {
-    git checkout main
+    $currentBranch = git rev-parse --abbrev-ref HEAD
+
+    if ($currentBranch -ne 'main') {
+        Write-Host "Warning: You are not on the 'main' branch. You are on '$currentBranch'."
+
+        $response = Read-Host "Do you want to create the new branch '$name' from the current branch? (y/N)"
+
+        if ($response -eq 'y') {
+            git checkout -b "$name"
+        }
+        else {
+            git checkout main
+        }
+    }
     git pull
     git checkout -b "$name"
+}
+
+function gitDeleteBranch([string] $name) {
+    $currentBranch = git rev-parse --abbrev-ref HEAD
+
+    if (-not $name) {
+        $name = $currentBranch
+    }
+
+    if ($currentBranch -eq $name) {
+        Write-Host "Warning: You are trying to delete the branch you are currently on ('$name')."
+        $mainExists = git show-ref --verify --quiet refs/heads/main
+        if ($mainExists -eq $true) {
+            git checkout main
+        }
+        else {
+            git checkout master
+        }
+        if (($lastexitcode -eq 0) -or ($currentBranch -ne $name)) {
+            git branch -d $name
+        }
+        else {
+            Write-Host "Error: Failed to switch to a different branch. Cannot delete the current branch."
+        }
+    }
+    else {
+        git branch -d "$name"
+    }
 }
 
 function slsDeployFunction ([string] $functionName) {
@@ -80,7 +121,7 @@ function openConfig {
 }
 
 function openConfigFolder {
-    cd (Split-Path $profile)
+    Set-Location (Split-Path $profile)
 }
 
 function connectDevDb {
@@ -102,6 +143,10 @@ function connectFetchDb {
 function updateAttdl {
     # run cd attdl command on the server
     ssh ubuntu@140.238.172.178 -i "$keychainPath/ubuntu.key" "cd /home/ubuntu/attdl_bot && sudo bash update.sh"
+}
+
+function connectOracle {
+    ssh ubuntu@140.238.172.178 -i "$keychainPath/ubuntu.key"
 }
 
 function getWSLPath {
@@ -158,6 +203,7 @@ setAlias "upd" "gitPull"
 setAlias "gacp" "gitAddCommitPush"
 setAlias "gito" "gitCheckout"
 setAlias "gb" "gitNewBranch"
+setAlias "gbdelete" "gitDeleteBranch"
 setAlias "greset" "gitReset"
 
 # Serverless framework
@@ -168,3 +214,6 @@ setAlias "sdf" "slsDeployFunction"
 setAlias "devdb" "connectDevDb"
 setAlias "proddb" "connectProdDb"
 setAlias "fetchdb" "connectFetchDb"
+
+# Etc
+setAlias "ora" "connectOracle"
