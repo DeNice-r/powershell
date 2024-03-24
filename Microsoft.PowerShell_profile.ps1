@@ -21,7 +21,8 @@ function gitStatus {
     git status
 }
 
-function gitCommit([string] $message) {
+function gitCommit {
+    $message = $args -join " "
     git commit -m "$message"
 }
 
@@ -59,10 +60,10 @@ function gitNewBranch([string] $name) {
         }
         else {
             git checkout main
+            git pull
+            git checkout -b "$name"
         }
     }
-    git pull
-    git checkout -b "$name"
 }
 
 function gitDeleteBranch([string] $name) {
@@ -74,13 +75,9 @@ function gitDeleteBranch([string] $name) {
 
     if ($currentBranch -eq $name) {
         Write-Host "Warning: You are trying to delete the branch you are currently on ('$name')."
-        $mainExists = git show-ref --verify --quiet refs/heads/main
-        if ($mainExists -eq $true) {
-            git checkout main
-        }
-        else {
-            git checkout master
-        }
+
+        git checkout main
+
         if (($lastexitcode -eq 0) -or ($currentBranch -ne $name)) {
             git branch -d $name
         }
@@ -89,7 +86,7 @@ function gitDeleteBranch([string] $name) {
         }
     }
     else {
-        git branch -d "$name"
+        git branch -D "$name"
     }
 }
 
@@ -103,7 +100,7 @@ function slsDeploy {
 
 function gitAddCommitPush ([string] $message) {
     gitAddCurrent
-    gitCommit("$message")
+    gitCommit $args
     gitPush
     echoAhuy
 }
