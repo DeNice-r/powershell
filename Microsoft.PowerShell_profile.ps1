@@ -98,9 +98,10 @@ function slsDeploy {
     npx sls deploy
 }
 
-function gitAddCommitPush ([string] $message) {
+function gitAddCommitPush {
     gitAddCurrent
-    gitCommit $args
+    $commitMessage = $args -join " "
+    gitCommit $commitMessage
     gitPush
     echoAhuy
 }
