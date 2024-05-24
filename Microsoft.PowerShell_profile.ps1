@@ -63,6 +63,8 @@ function gitNewBranch([string] $name) {
             git pull
             git checkout -b "$name"
         }
+    } else {
+        git checkout -b "$name"
     }
 }
 
