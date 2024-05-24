@@ -217,3 +217,5 @@ setAlias "fetchdb" "connectFetchDb"
 
 # Etc
 setAlias "ora" "connectOracle"
+
+oh-my-posh init pwsh --config C:\Users\Denys\Documents\PowerShell\theme.omp.json | Invoke-Expression

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "blocks": [
+    {
+      "alignment": "left",
+      "segments": [
+        {
+          "foreground": "#00C5C7",
+          "properties": {
+            "folder_icon": "\u2026",
+            "style": "agnoster_short",
+            "max_depth": 3
+          },
+          "style": "plain",
+          "template": "{{ .Path }} ",
+          "type": "path"
+        },
+        {
+          "foreground": "#ff8080",
+          "style": "plain",
+          "template": "⚡",
+          "type": "root"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "right",
+      "segments": [
+        {
+          "foreground": "#00C5C7",
+          "powerline_symbol": "\ue0b4",
+          "properties": {
+            "branch_max_length": 25,
+            "fetch_stash_count": true,
+            "fetch_status": true,
+            "fetch_upstream_icon": true
+          },
+          "style": "plain",
+          "template": "{{ if gt .StashCount 0 }} <#505050,>\uEB4B {{ .StashCount }}</>{{ end }} {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} <#1C8C1C,>\uf044 {{ .Working.String }}</>{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} <#2EF924,>\uf046 {{ .Staging.String }}</>{{ end }}",
+          "type": "git"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "right",
+      "newline": true,
+      "segments": [
+        {
+          "alias": "change color if wanna see it",
+          "foreground": "#000000",
+          "style": "diamond",
+          "template": " {{ round .PhysicalPercentUsed .Precision }}%, {{ (div ((sub .PhysicalTotalMemory .PhysicalFreeMemory)|float64) 1073741824.0) }}/{{ (div .PhysicalTotalMemory 1073741824.0) }}GB",
+          "type": "sysinfo"
+        },
+        {
+          "foreground": "#505050",
+          "properties": {
+            "style": "austin",
+            "always_enabled": true
+          },
+          "style": "powerline",
+          "template": " \ueba2 {{ .FormattedMs }} ",
+          "type": "executiontime"
+        },
+        {
+          "foreground": "#00C5C7",
+
+          "properties": {
+            "time_format": "01.02, 15:04:05"
+          },
+          "style": "diamond",
+          "template": "\uF43A {{ .CurrentDate | date .Format }}",
+          "type": "time"
+        }
+      ],
+      "type": "rprompt"
+    },
+    {
+      "alignment": "left",
+      "segments": [
+        {
+          "foreground": "lightGreen",
+          "style": "plain",
+          "template": "❯",
+          "type": "text"
+        }
+      ],
+      "type": "prompt"
+    }
+  ],
+  "console_title_template": "{{ .Folder }}",
+  "transient_prompt": {
+    "background": "transparent",
+    "foreground": "#00C5C7",
+    "template": "❯ "
+  },
+  "final_space": true,
+  "version": 2
+}
